@@ -1,0 +1,1061 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CryptoSécurité — Audit de tokens Solana</title>
+  <meta name="description" content="La première plateforme d'audit crypto francophone. 8 critères, zéro compromis. Auditez votre token Solana pour 0,02 SOL.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600&display=swap" rel="stylesheet">
+
+  <style>
+    /* ── Variables ─────────────────────────────────────────────────────────── */
+    :root {
+      --bleu:       #0B1F3A;
+      --bleu-mid:   #132D52;
+      --or:         #C9A84C;
+      --or-clair:   #F5E6C0;
+      --blanc:      #FAFAF8;
+      --gris:       #6B7280;
+      --vert:       #1A6B4A;
+      --vert-clair: #E8F5EE;
+      --bg-light:   #F1F4F9;
+      --border:     #E2E8F0;
+      --shadow-sm:  0 2px 8px rgba(11,31,58,0.07);
+      --shadow-md:  0 8px 32px rgba(11,31,58,0.12);
+      --shadow-lg:  0 16px 56px rgba(11,31,58,0.16);
+      --radius:     14px;
+      --ease:       cubic-bezier(0.4,0,0.2,1);
+    }
+
+    /* ── Reset ─────────────────────────────────────────────────────────────── */
+    *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: var(--blanc);
+      color: var(--bleu);
+      line-height: 1.65;
+      overflow-x: hidden;
+    }
+    h1,h2,h3,h4 { font-family: 'Syne', sans-serif; }
+    a { text-decoration: none; }
+    img { max-width: 100%; display: block; }
+
+    /* ── Utilitaires ───────────────────────────────────────────────────────── */
+    .container { max-width: 1160px; margin: 0 auto; padding: 0 1.5rem; }
+    .section    { padding: 5.5rem 1.5rem; }
+
+    .label {
+      display: inline-block;
+      font-size: 0.78rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      color: var(--or);
+      margin-bottom: 0.75rem;
+    }
+
+    .section-title {
+      font-size: clamp(1.9rem,3.5vw,2.8rem);
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      line-height: 1.15;
+      margin-bottom: 1rem;
+    }
+
+    .section-sub {
+      font-size: 1.05rem;
+      color: var(--gris);
+      max-width: 540px;
+      line-height: 1.7;
+    }
+
+    /* ── Boutons ───────────────────────────────────────────────────────────── */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.45rem;
+      padding: 0.85rem 1.9rem;
+      border-radius: 10px;
+      font-family: 'DM Sans', sans-serif;
+      font-weight: 600;
+      font-size: 0.97rem;
+      cursor: pointer;
+      border: none;
+      transition: transform 0.22s var(--ease), box-shadow 0.22s var(--ease), background 0.22s var(--ease);
+    }
+    .btn:hover { transform: translateY(-2px); }
+
+    .btn-or {
+      background: var(--or);
+      color: var(--bleu);
+      box-shadow: 0 4px 16px rgba(201,168,76,0.32);
+    }
+    .btn-or:hover { background: #d4b45a; box-shadow: 0 8px 28px rgba(201,168,76,0.42); }
+
+    .btn-outline {
+      background: transparent;
+      color: var(--blanc);
+      border: 1.5px solid rgba(250,250,248,0.32);
+    }
+    .btn-outline:hover { background: rgba(250,250,248,0.09); border-color: rgba(250,250,248,0.6); }
+
+    .btn-dark {
+      background: var(--bleu);
+      color: var(--blanc);
+      font-size: 0.9rem;
+      padding: 0.6rem 1.25rem;
+    }
+    .btn-dark:hover { background: var(--bleu-mid); }
+
+    /* ── Navbar ────────────────────────────────────────────────────────────── */
+    #navbar {
+      position: fixed;
+      inset: 0 0 auto 0;
+      z-index: 900;
+      height: 70px;
+      display: flex;
+      align-items: center;
+      padding: 0 1.5rem;
+      transition: background 0.35s var(--ease), box-shadow 0.35s var(--ease);
+    }
+    #navbar.scrolled {
+      background: rgba(250,250,248,0.96);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      box-shadow: 0 1px 0 var(--border), var(--shadow-sm);
+    }
+
+    .nav-inner {
+      max-width: 1160px;
+      width: 100%;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 2rem;
+    }
+
+    .nav-logo {
+      font-family: 'Syne', sans-serif;
+      font-weight: 700;
+      font-size: 1.15rem;
+      color: var(--blanc);
+      white-space: nowrap;
+      transition: color 0.25s;
+    }
+    #navbar.scrolled .nav-logo { color: var(--bleu); }
+
+    .nav-links {
+      display: flex;
+      list-style: none;
+      gap: 2.2rem;
+    }
+    .nav-links a {
+      font-size: 0.93rem;
+      font-weight: 500;
+      color: rgba(250,250,248,0.78);
+      transition: color 0.2s;
+    }
+    #navbar.scrolled .nav-links a { color: var(--gris); }
+    .nav-links a:hover,
+    #navbar.scrolled .nav-links a:hover { color: var(--or); }
+
+    #navbar.scrolled .btn-dark { background: var(--bleu); }
+
+    /* ── Hero ──────────────────────────────────────────────────────────────── */
+    #hero {
+      min-height: 100vh;
+      background: var(--bleu);
+      background-image:
+        radial-gradient(ellipse 70% 55% at 15% 55%, rgba(201,168,76,0.09) 0%, transparent 65%),
+        radial-gradient(ellipse 55% 45% at 85% 20%, rgba(201,168,76,0.07) 0%, transparent 60%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 9rem 1.5rem 5.5rem;
+      position: relative;
+      overflow: hidden;
+    }
+    #hero::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background-image: radial-gradient(circle at 1px 1px, rgba(201,168,76,0.065) 1px, transparent 0);
+      background-size: 42px 42px;
+      pointer-events: none;
+    }
+
+    .hero-content { position: relative; z-index: 1; max-width: 800px; }
+
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      background: rgba(201,168,76,0.13);
+      border: 1px solid rgba(201,168,76,0.28);
+      color: var(--or-clair);
+      padding: 0.45rem 1.2rem;
+      border-radius: 100px;
+      font-size: 0.86rem;
+      font-weight: 500;
+      letter-spacing: 0.015em;
+      margin-bottom: 2.2rem;
+    }
+
+    #hero h1 {
+      font-size: clamp(2.6rem,6.5vw,4.8rem);
+      font-weight: 800;
+      color: var(--blanc);
+      line-height: 1.08;
+      margin-bottom: 1.6rem;
+      letter-spacing: -0.025em;
+    }
+    .accent { color: var(--or); }
+
+    .hero-sub {
+      font-size: clamp(1rem,2vw,1.18rem);
+      color: rgba(250,250,248,0.68);
+      max-width: 580px;
+      margin: 0 auto 2.8rem;
+      line-height: 1.75;
+    }
+
+    .hero-btns {
+      display: flex;
+      gap: 1rem;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    /* ── Stats bar ─────────────────────────────────────────────────────────── */
+    #stats {
+      background: var(--bleu-mid);
+      border-top: 1px solid rgba(201,168,76,0.18);
+      border-bottom: 1px solid rgba(201,168,76,0.18);
+    }
+    .stats-inner {
+      max-width: 1160px;
+      margin: 0 auto;
+      padding: 2.8rem 1.5rem;
+      display: grid;
+      grid-template-columns: 1fr 1px 1fr 1px 1fr;
+      align-items: center;
+      gap: 0;
+    }
+    .stat-divider { background: rgba(201,168,76,0.2); align-self: stretch; min-height: 52px; }
+    .stat-item { text-align: center; padding: 0.5rem 1rem; }
+    .stat-num {
+      font-family: 'Syne', sans-serif;
+      font-size: clamp(2rem,4vw,2.9rem);
+      font-weight: 800;
+      color: var(--or);
+      line-height: 1;
+      margin-bottom: 0.4rem;
+    }
+    .stat-lbl { color: rgba(250,250,248,0.68); font-size: 0.92rem; }
+
+    /* ── Critères ──────────────────────────────────────────────────────────── */
+    #criteres { background: var(--blanc); }
+    .criteria-head { text-align: center; margin-bottom: 3.5rem; }
+    .criteria-head .section-sub { margin: 0 auto; }
+
+    .criteria-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 1.1rem;
+    }
+
+    .crit-card {
+      background: var(--blanc);
+      border: 1.5px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1.7rem 1.4rem;
+      position: relative;
+      overflow: hidden;
+      transition: border-color 0.25s, box-shadow 0.25s, transform 0.25s;
+    }
+    .crit-card::after {
+      content: '';
+      position: absolute;
+      inset: 0 0 auto 0;
+      height: 3px;
+      background: linear-gradient(90deg, var(--or), var(--or-clair));
+      opacity: 0;
+      transition: opacity 0.25s;
+    }
+    .crit-card:hover { border-color: rgba(201,168,76,0.45); box-shadow: var(--shadow-md); transform: translateY(-3px); }
+    .crit-card:hover::after { opacity: 1; }
+
+    .crit-icon {
+      width: 46px; height: 46px;
+      background: #FEF9EE;
+      border-radius: 11px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.35rem;
+      margin-bottom: 1rem;
+    }
+    .crit-name {
+      font-family: 'Syne', sans-serif;
+      font-weight: 600;
+      font-size: 0.97rem;
+      margin-bottom: 0.45rem;
+    }
+    .crit-val {
+      font-size: 0.84rem;
+      font-weight: 600;
+      color: var(--vert);
+      background: var(--vert-clair);
+      display: inline-block;
+      padding: 0.18rem 0.65rem;
+      border-radius: 100px;
+    }
+
+    /* ── Badge ─────────────────────────────────────────────────────────────── */
+    #badge-section {
+      background: var(--bleu);
+      padding: 6rem 1.5rem;
+    }
+    .badge-inner { max-width: 720px; margin: 0 auto; text-align: center; }
+
+    .badge-box {
+      display: inline-flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.9rem;
+      border: 1.5px solid rgba(201,168,76,0.38);
+      border-radius: 20px;
+      padding: 3rem 3.5rem 2.5rem;
+      margin-bottom: 2.8rem;
+      position: relative;
+      background: rgba(201,168,76,0.06);
+    }
+    .badge-box::before {
+      content: '';
+      position: absolute;
+      inset: -1px;
+      border-radius: 21px;
+      background: linear-gradient(140deg, rgba(201,168,76,0.45) 0%, transparent 45%, rgba(201,168,76,0.22) 100%);
+      z-index: -1;
+    }
+
+    .badge-emoji { font-size: 3.8rem; line-height: 1; }
+    .badge-name  {
+      font-family: 'Syne', sans-serif;
+      font-size: 1.55rem;
+      font-weight: 700;
+      color: var(--or);
+      letter-spacing: 0.06em;
+    }
+    .badge-by { color: rgba(250,250,248,0.6); font-size: 0.9rem; }
+
+    .badge-title {
+      font-family: 'Syne', sans-serif;
+      font-size: clamp(1.5rem,3vw,2.3rem);
+      font-weight: 700;
+      color: var(--blanc);
+      letter-spacing: -0.02em;
+      margin-bottom: 1rem;
+    }
+    .badge-desc {
+      color: rgba(250,250,248,0.62);
+      max-width: 480px;
+      margin: 0 auto 2.5rem;
+      line-height: 1.7;
+      font-size: 0.98rem;
+    }
+
+    .pills {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.6rem;
+      justify-content: center;
+    }
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      background: rgba(201,168,76,0.1);
+      border: 1px solid rgba(201,168,76,0.22);
+      color: var(--or-clair);
+      padding: 0.38rem 1rem;
+      border-radius: 100px;
+      font-size: 0.84rem;
+      font-weight: 500;
+    }
+
+    /* ── Tokens certifiés ──────────────────────────────────────────────────── */
+    #tokens { background: var(--bg-light); }
+
+    .tokens-head {
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      gap: 1rem;
+      margin-bottom: 3rem;
+      flex-wrap: wrap;
+    }
+
+    .live-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 0.82rem;
+      font-weight: 600;
+      color: var(--vert);
+    }
+    .live-dot {
+      width: 8px; height: 8px;
+      background: var(--vert);
+      border-radius: 50%;
+      animation: blink 2s infinite;
+    }
+    @keyframes blink {
+      0%,100% { opacity:1; transform:scale(1); }
+      50%      { opacity:0.5; transform:scale(1.35); }
+    }
+
+    .tokens-wrapper { position: relative; }
+
+    .tokens-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(290px, 1fr));
+      gap: 1.1rem;
+    }
+
+    .token-card {
+      background: var(--blanc);
+      border: 1.5px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1.5rem;
+      transition: box-shadow 0.25s, transform 0.25s;
+    }
+    .token-card:hover { box-shadow: var(--shadow-md); transform: translateY(-2px); }
+    .token-card.blurred { filter: blur(5px); pointer-events: none; user-select: none; }
+
+    .tc-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.75rem; }
+    .tc-name { font-family:'Syne',sans-serif; font-weight:700; font-size:1.03rem; }
+    .tc-badge {
+      background: var(--vert-clair);
+      color: var(--vert);
+      font-size: 0.75rem;
+      font-weight: 600;
+      padding: 0.2rem 0.6rem;
+      border-radius: 100px;
+    }
+    .tc-addr { font-family: monospace; font-size: 0.78rem; color: var(--gris); margin-bottom: 1rem; }
+
+    .tc-stats { display: grid; grid-template-columns: repeat(3,1fr); gap: 0.5rem; }
+    .tc-stat { text-align: center; }
+    .tc-stat-val { font-family:'Syne',sans-serif; font-weight:700; font-size:0.97rem; }
+    .tc-stat-lbl { font-size: 0.7rem; color: var(--gris); margin-top: 0.1rem; }
+
+    .tc-date {
+      margin-top: 1rem;
+      padding-top: 0.75rem;
+      border-top: 1px solid var(--border);
+      font-size: 0.76rem;
+      color: var(--gris);
+    }
+
+    /* Overlay flou */
+    .blur-overlay {
+      position: absolute;
+      bottom: 0; left: 0; right: 0;
+      height: 68%;
+      background: linear-gradient(to bottom, transparent 0%, var(--bg-light) 48%);
+      display: flex;
+      align-items: flex-end;
+      justify-content: center;
+      padding-bottom: 2.5rem;
+      pointer-events: none;
+    }
+    .blur-cta {
+      background: var(--bleu);
+      color: var(--blanc);
+      padding: 0.9rem 2.4rem;
+      border-radius: 12px;
+      font-weight: 600;
+      font-size: 0.97rem;
+      pointer-events: all;
+      transition: background 0.22s, transform 0.22s;
+      text-align: center;
+      box-shadow: var(--shadow-md);
+    }
+    .blur-cta:hover { background: var(--bleu-mid); transform: translateY(-2px); }
+
+    .tokens-empty {
+      text-align: center;
+      padding: 4rem 2rem;
+      background: var(--blanc);
+      border-radius: var(--radius);
+      border: 1.5px dashed var(--border);
+      color: var(--gris);
+      grid-column: 1/-1;
+    }
+    .tokens-empty .ei { font-size: 2.8rem; margin-bottom: 1rem; }
+
+    /* ── Tarifs ────────────────────────────────────────────────────────────── */
+    #tarifs { background: var(--blanc); }
+    .pricing-head { text-align:center; margin-bottom: 3.5rem; }
+    .pricing-head .section-sub { margin: 0 auto; }
+
+    .pricing-grid {
+      display: grid;
+      grid-template-columns: repeat(2,1fr);
+      gap: 1.4rem;
+      max-width: 820px;
+      margin: 0 auto;
+    }
+
+    .pc {
+      background: var(--blanc);
+      border: 1.5px solid var(--border);
+      border-radius: 18px;
+      padding: 2.4rem 2.2rem;
+      position: relative;
+      transition: box-shadow 0.25s, transform 0.25s;
+    }
+    .pc:hover { box-shadow: var(--shadow-lg); transform: translateY(-4px); }
+    .pc.featured { border-color: var(--or); box-shadow: 0 0 0 1px rgba(201,168,76,0.25); }
+
+    .pc-ribbon {
+      position: absolute;
+      top: -13px; left: 50%; transform: translateX(-50%);
+      background: var(--or);
+      color: var(--bleu);
+      font-size: 0.76rem;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      padding: 0.3rem 1.15rem;
+      border-radius: 100px;
+      white-space: nowrap;
+    }
+
+    .pc-type { font-size:0.78rem; font-weight:700; text-transform:uppercase; letter-spacing:0.1em; color:var(--gris); margin-bottom:0.8rem; }
+    .pc-price {
+      font-family: 'Syne', sans-serif;
+      font-size: 3rem;
+      font-weight: 800;
+      color: var(--bleu);
+      line-height: 1;
+      margin-bottom: 0.3rem;
+    }
+    .pc-price span { font-size: 1.2rem; font-weight: 600; }
+    .pc-period { font-size: 0.88rem; color: var(--gris); margin-bottom: 2rem; }
+
+    .pc-features { list-style:none; display:flex; flex-direction:column; gap:0.7rem; margin-bottom:2rem; }
+    .pc-features li { display:flex; align-items:center; gap:0.7rem; font-size:0.93rem; }
+    .pc-features li::before { content:'✓'; color:var(--vert); font-weight:700; font-size:0.97rem; flex-shrink:0; }
+
+    .pc-btn {
+      display:block; text-align:center;
+      padding: 0.82rem 1.5rem;
+      border-radius: 10px;
+      font-weight: 600; font-size: 0.93rem;
+      transition: background 0.2s, transform 0.2s;
+    }
+    .pc-btn:hover { transform: translateY(-1px); }
+    .pc-btn-sec { background: var(--bg-light); color: var(--bleu); }
+    .pc-btn-sec:hover { background: #DDE5F1; }
+    .pc-btn-pri { background: var(--bleu); color: var(--blanc); }
+    .pc-btn-pri:hover { background: var(--bleu-mid); }
+
+    /* ── Comment payer ─────────────────────────────────────────────────────── */
+    #payer { background: var(--bleu); padding: 6rem 1.5rem; }
+    .payer-inner { max-width: 820px; margin: 0 auto; }
+    .payer-head { text-align:center; margin-bottom:0; }
+    .payer-head .label { display:block; }
+    .payer-head .section-title { color: var(--blanc); margin-bottom: 0.4rem; }
+    .payer-head p { font-size:0.96rem; color:rgba(250,250,248,0.58); margin-bottom: 0; }
+
+    .wallet-box {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1.5rem;
+      background: rgba(201,168,76,0.07);
+      border: 1.5px solid rgba(201,168,76,0.32);
+      border-radius: 14px;
+      padding: 1.5rem 1.8rem;
+      margin: 2.5rem 0;
+      flex-wrap: wrap;
+    }
+    .wallet-lbl { font-size:0.76rem; font-weight:600; text-transform:uppercase; letter-spacing:0.1em; color:rgba(250,250,248,0.45); margin-bottom:0.35rem; }
+    .wallet-addr { font-family:monospace; font-size:clamp(0.72rem,1.6vw,0.93rem); color:var(--or-clair); word-break:break-all; }
+
+    .copy-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      background: var(--or);
+      color: var(--bleu);
+      border: none;
+      padding: 0.68rem 1.4rem;
+      border-radius: 9px;
+      font-family: 'DM Sans', sans-serif;
+      font-weight: 600;
+      font-size: 0.9rem;
+      cursor: pointer;
+      white-space: nowrap;
+      flex-shrink: 0;
+      transition: background 0.2s, transform 0.2s;
+    }
+    .copy-btn:hover { background: #d4b45a; transform: translateY(-1px); }
+    .copy-btn.copied { background: var(--vert); color: var(--blanc); }
+
+    .steps {
+      display: grid;
+      grid-template-columns: repeat(3,1fr);
+      gap: 1rem;
+      margin-top: 0.5rem;
+    }
+    .step { text-align:center; padding: 1.5rem 0.75rem; }
+    .step-num {
+      width:48px; height:48px;
+      background: rgba(201,168,76,0.12);
+      border: 1.5px solid rgba(201,168,76,0.28);
+      border-radius: 50%;
+      display:flex; align-items:center; justify-content:center;
+      font-family:'Syne',sans-serif; font-weight:700; font-size:1.1rem; color:var(--or);
+      margin: 0 auto 1.1rem;
+    }
+    .step-t { font-family:'Syne',sans-serif; font-weight:600; font-size:0.95rem; color:var(--blanc); margin-bottom:0.5rem; }
+    .step-d { font-size:0.87rem; color:rgba(250,250,248,0.57); line-height:1.65; }
+    .step-d strong { color:var(--or-clair); font-weight:600; }
+
+    /* ── Footer ────────────────────────────────────────────────────────────── */
+    footer {
+      background: #05111E;
+      padding: 2rem 1.5rem;
+      text-align: center;
+    }
+    footer p { color:rgba(250,250,248,0.38); font-size:0.86rem; line-height:1.8; }
+    footer a { color:rgba(250,250,248,0.38); }
+    footer a:hover { color:var(--or); }
+
+    /* ── Animations scroll ─────────────────────────────────────────────────── */
+    .fade-up {
+      opacity: 0;
+      transform: translateY(28px);
+      transition: opacity 0.55s var(--ease), transform 0.55s var(--ease);
+    }
+    .fade-up.in { opacity:1; transform:translateY(0); }
+
+    /* ── Responsive ────────────────────────────────────────────────────────── */
+    @media (max-width: 980px) {
+      .criteria-grid { grid-template-columns: repeat(2,1fr); }
+      .pricing-grid  { grid-template-columns: 1fr; max-width: 440px; }
+      .steps         { grid-template-columns: 1fr; max-width: 360px; margin: 0.5rem auto 0; }
+    }
+    @media (max-width: 640px) {
+      .nav-links { display:none; }
+      .stats-inner {
+        grid-template-columns: 1fr;
+        gap: 0;
+      }
+      .stat-divider { display:none; }
+      .stat-item { padding: 1.2rem 1rem; border-bottom: 1px solid rgba(201,168,76,0.12); }
+      .stat-item:last-child { border-bottom: none; }
+      .criteria-grid { grid-template-columns: 1fr; }
+      .tokens-head { flex-direction:column; align-items:flex-start; }
+      .wallet-box { flex-direction:column; align-items:flex-start; }
+      .badge-box { padding: 2rem 1.5rem; }
+      .section { padding: 4rem 1.5rem; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ══ NAVBAR ══════════════════════════════════════════════════════════════ -->
+<nav id="navbar">
+  <div class="nav-inner">
+    <a href="#hero" class="nav-logo">🇫🇷 CryptoSécurité</a>
+    <ul class="nav-links">
+      <li><a href="#criteres">Audits</a></li>
+      <li><a href="#tokens">Tokens validés</a></li>
+      <li><a href="#tarifs">Tarifs</a></li>
+      <li><a href="#payer">À propos</a></li>
+    </ul>
+    <a href="#payer" class="btn btn-dark">Faire auditer mon token</a>
+  </div>
+</nav>
+
+<!-- ══ HERO ════════════════════════════════════════════════════════════════ -->
+<section id="hero">
+  <div class="hero-content">
+    <div class="hero-badge">🇫🇷 La première plateforme d'audit crypto francophone</div>
+    <h1>La crypto française,<br>enfin <span class="accent">sécurisée</span></h1>
+    <p class="hero-sub">
+      Auditez votre token Solana en moins de 2 minutes. 8 critères vérifiés
+      automatiquement — RugCheck, GoPlus, GeckoTerminal.
+      Obtenez le badge <strong style="color:var(--or)">French Quality</strong>.
+    </p>
+    <div class="hero-btns">
+      <a href="#payer" class="btn btn-or">Auditer mon token — 0,02 SOL</a>
+      <a href="#tokens" class="btn btn-outline">Voir les tokens certifiés</a>
+    </div>
+  </div>
+</section>
+
+<!-- ══ STATS BAR ═══════════════════════════════════════════════════════════ -->
+<div id="stats">
+  <div class="stats-inner">
+    <div class="stat-item fade-up">
+      <div class="stat-num">8/8</div>
+      <div class="stat-lbl">critères vérifiés</div>
+    </div>
+    <div class="stat-divider"></div>
+    <div class="stat-item fade-up" style="transition-delay:.1s">
+      <div class="stat-num">0,02 SOL</div>
+      <div class="stat-lbl">par audit</div>
+    </div>
+    <div class="stat-divider"></div>
+    <div class="stat-item fade-up" style="transition-delay:.2s">
+      <div class="stat-num">100 %</div>
+      <div class="stat-lbl">automatique</div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ CRITÈRES ════════════════════════════════════════════════════════════ -->
+<section class="section" id="criteres">
+  <div class="container">
+    <div class="criteria-head">
+      <div class="label fade-up">Notre méthode</div>
+      <h2 class="section-title fade-up">8 critères, zéro compromis</h2>
+      <p class="section-sub fade-up">
+        Chaque token est analysé selon des seuils objectifs et transparents,
+        croisés depuis trois sources indépendantes.
+      </p>
+    </div>
+    <div class="criteria-grid">
+      <div class="crit-card fade-up">
+        <div class="crit-icon">🔍</div>
+        <div class="crit-name">Bundler Hold</div>
+        <span class="crit-val">&lt; 5 %</span>
+      </div>
+      <div class="crit-card fade-up" style="transition-delay:.06s">
+        <div class="crit-icon">👤</div>
+        <div class="crit-name">Dev Holding</div>
+        <span class="crit-val">0 %</span>
+      </div>
+      <div class="crit-card fade-up" style="transition-delay:.12s">
+        <div class="crit-icon">🔥</div>
+        <div class="crit-name">LP Burned</div>
+        <span class="crit-val">100 %</span>
+      </div>
+      <div class="crit-card fade-up" style="transition-delay:.18s">
+        <div class="crit-icon">🎯</div>
+        <div class="crit-name">Snipers</div>
+        <span class="crit-val">&lt; 2 %</span>
+      </div>
+      <div class="crit-card fade-up" style="transition-delay:.24s">
+        <div class="crit-icon">👥</div>
+        <div class="crit-name">Holders</div>
+        <span class="crit-val">100 +</span>
+      </div>
+      <div class="crit-card fade-up" style="transition-delay:.30s">
+        <div class="crit-icon">💧</div>
+        <div class="crit-name">Liquidité</div>
+        <span class="crit-val">10 000 $ +</span>
+      </div>
+      <div class="crit-card fade-up" style="transition-delay:.36s">
+        <div class="crit-icon">🔐</div>
+        <div class="crit-name">Mint / Freeze</div>
+        <span class="crit-val">Désactivés</span>
+      </div>
+      <div class="crit-card fade-up" style="transition-delay:.42s">
+        <div class="crit-icon">⭐</div>
+        <div class="crit-name">Audit Score</div>
+        <span class="crit-val">7 / 8 +</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ BADGE FRENCH QUALITY ════════════════════════════════════════════════ -->
+<section id="badge-section">
+  <div class="badge-inner">
+    <div class="badge-box fade-up">
+      <div class="badge-emoji">🇫🇷</div>
+      <div class="badge-name">FRENCH QUALITY</div>
+      <div class="badge-by">Audité et certifié par CryptoSécurité</div>
+    </div>
+    <h2 class="badge-title fade-up">Le sceau de confiance<br>de la crypto française</h2>
+    <p class="badge-desc fade-up">
+      Seuls les tokens franchissant les 8 critères sans exception obtiennent le badge.
+      Pas de compromis, pas de favoritisme — le code décide.
+    </p>
+    <div class="pills fade-up">
+      <span class="pill">✓ Pas de bundler</span>
+      <span class="pill">✓ Dev à 0 %</span>
+      <span class="pill">✓ LP burned</span>
+      <span class="pill">✓ Snipers &lt; 2 %</span>
+      <span class="pill">✓ 100+ holders</span>
+      <span class="pill">✓ Liquidité solide</span>
+      <span class="pill">✓ Mint/Freeze off</span>
+    </div>
+  </div>
+</section>
+
+<!-- ══ TOKENS CERTIFIÉS ════════════════════════════════════════════════════ -->
+<section class="section" id="tokens">
+  <div class="container">
+    <div class="tokens-head">
+      <div>
+        <div class="label">Validés par le bot</div>
+        <h2 class="section-title" style="margin-bottom:0">Tokens certifiés</h2>
+      </div>
+      <div class="live-badge">
+        <div class="live-dot"></div>
+        Mis à jour en temps réel
+      </div>
+    </div>
+    <div class="tokens-wrapper">
+      <div class="tokens-grid" id="tokens-grid">
+        <div class="tokens-empty">
+          <div class="ei">🔎</div>
+          <p>Chargement…</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ TARIFS ══════════════════════════════════════════════════════════════ -->
+<section class="section" id="tarifs">
+  <div class="container">
+    <div class="pricing-head">
+      <div class="label fade-up">Transparent et automatique</div>
+      <h2 class="section-title fade-up">Des tarifs clairs</h2>
+      <p class="section-sub fade-up">
+        Pas d'abonnement caché, pas d'intermédiaire. Envoyez le montant exact et l'audit se lance dans la minute.
+      </p>
+    </div>
+    <div class="pricing-grid">
+
+      <!-- Audit ponctuel -->
+      <div class="pc fade-up">
+        <div class="pc-type">Audit</div>
+        <div class="pc-price">0,02 <span>SOL</span></div>
+        <div class="pc-period">par audit ponctuel</div>
+        <ul class="pc-features">
+          <li>8 critères vérifiés</li>
+          <li>Rapport complet JSON</li>
+          <li>Badge French Quality si validé</li>
+          <li>Résultat en moins de 2 min</li>
+        </ul>
+        <a href="#payer" class="pc-btn pc-btn-sec">Auditer mon token →</a>
+      </div>
+
+      <!-- Abonnement -->
+      <div class="pc featured fade-up" style="transition-delay:.1s">
+        <div class="pc-ribbon">⭐ Recommandé</div>
+        <div class="pc-type">Abonnement</div>
+        <div class="pc-price">0,3 <span>SOL</span></div>
+        <div class="pc-period">par mois · accès complet</div>
+        <ul class="pc-features">
+          <li>Liste complète des tokens certifiés</li>
+          <li>Alertes si le holder #1 vend</li>
+          <li>Historique prix 24h et 7j</li>
+          <li>Accès prioritaire aux rapports</li>
+        </ul>
+        <a href="#payer" class="pc-btn pc-btn-pri">S'abonner maintenant →</a>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ══ COMMENT PAYER ═══════════════════════════════════════════════════════ -->
+<section id="payer">
+  <div class="payer-inner">
+    <div class="payer-head">
+      <span class="label">Simple et automatique</span>
+      <h2 class="section-title">Comment payer ?</h2>
+      <p>Envoyez directement sur notre wallet Solana</p>
+    </div>
+
+    <div class="wallet-box">
+      <div>
+        <div class="wallet-lbl">Adresse wallet</div>
+        <div class="wallet-addr" id="wallet-addr">56YRiuepaTcqS7hQVeAnrEJbicD1KspQJ9sETnTJYvm5</div>
+      </div>
+      <button class="copy-btn" id="copy-btn" onclick="copyWallet()">
+        📋 Copier l'adresse
+      </button>
+    </div>
+
+    <div class="steps">
+      <div class="step fade-up">
+        <div class="step-num">1</div>
+        <div class="step-t">Envoyez le SOL</div>
+        <div class="step-d">
+          0,02 SOL pour un audit · 0,3 SOL pour l'abonnement.<br>
+          Ajoutez l'adresse mint de votre token en <strong>mémo</strong>.
+        </div>
+      </div>
+      <div class="step fade-up" style="transition-delay:.1s">
+        <div class="step-num">2</div>
+        <div class="step-t">Audit automatique</div>
+        <div class="step-d">
+          Le bot détecte votre paiement et lance l'analyse immédiatement.
+          Résultat en <strong>moins de 2 minutes</strong>.
+        </div>
+      </div>
+      <div class="step fade-up" style="transition-delay:.2s">
+        <div class="step-num">3</div>
+        <div class="step-t">Rapport + badge</div>
+        <div class="step-d">
+          Rapport JSON complet disponible. Si votre token valide les 8 critères,
+          le badge <strong>🇫🇷 French Quality</strong> lui est attribué.
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ FOOTER ══════════════════════════════════════════════════════════════ -->
+<footer>
+  <p>CryptoSécurité — La crypto francophone, enfin sécurisée 🇫🇷</p>
+  <p>Solana &nbsp;·&nbsp; RugCheck &nbsp;·&nbsp; GoPlus &nbsp;·&nbsp; GeckoTerminal</p>
+</footer>
+
+<script>
+/* ── Navbar scroll ─────────────────────────────────────────────────────── */
+const navbar = document.getElementById('navbar');
+const onScroll = () => navbar.classList.toggle('scrolled', window.scrollY > 50);
+window.addEventListener('scroll', onScroll, { passive: true });
+onScroll();
+
+/* ── Copier le wallet ──────────────────────────────────────────────────── */
+function copyWallet() {
+  const addr = document.getElementById('wallet-addr').textContent.trim();
+  const btn  = document.getElementById('copy-btn');
+  const reset = () => { btn.textContent = '📋 Copier l\'adresse'; btn.classList.remove('copied'); };
+
+  const apply = () => { btn.textContent = '✅ Copié !'; btn.classList.add('copied'); setTimeout(reset, 2600); };
+
+  if (navigator.clipboard && window.isSecureContext) {
+    navigator.clipboard.writeText(addr).then(apply).catch(() => fallback(addr, apply));
+  } else {
+    fallback(addr, apply);
+  }
+}
+
+function fallback(text, cb) {
+  const ta = Object.assign(document.createElement('textarea'), {
+    value: text,
+    style: 'position:fixed;opacity:0;top:0;left:0'
+  });
+  document.body.appendChild(ta);
+  ta.focus(); ta.select();
+  try { document.execCommand('copy'); cb(); } catch (e) {}
+  document.body.removeChild(ta);
+}
+
+/* ── Chargement dynamique des tokens ──────────────────────────────────── */
+function fmtDate(iso) {
+  try {
+    return new Date(iso).toLocaleDateString('fr-FR', { day:'2-digit', month:'short', year:'numeric' });
+  } catch { return '—'; }
+}
+
+function fmtLiq(v) {
+  if (v == null) return '—';
+  if (v >= 1_000_000) return (v/1_000_000).toFixed(1) + ' M$';
+  if (v >= 1_000)     return (v/1_000).toFixed(1) + ' k$';
+  return v.toLocaleString('fr-FR') + ' $';
+}
+
+function mkCard(t) {
+  const addr = t.mint_address || '';
+  const short = addr.length > 14 ? addr.slice(0,6) + '…' + addr.slice(-6) : addr;
+  const d = document.createElement('div');
+  d.className = 'token-card';
+  d.innerHTML = `
+    <div class="tc-head">
+      <div class="tc-name">${t.token_name || 'Inconnu'}</div>
+      <span class="tc-badge">🇫🇷 Certifié</span>
+    </div>
+    <div class="tc-addr">${short}</div>
+    <div class="tc-stats">
+      <div class="tc-stat">
+        <div class="tc-stat-val">${t.audit_score != null ? t.audit_score+'/8' : '—'}</div>
+        <div class="tc-stat-lbl">Score</div>
+      </div>
+      <div class="tc-stat">
+        <div class="tc-stat-val">${fmtLiq(t.liquidity)}</div>
+        <div class="tc-stat-lbl">Liquidité</div>
+      </div>
+      <div class="tc-stat">
+        <div class="tc-stat-val">${t.holder_count != null ? t.holder_count.toLocaleString('fr-FR') : '—'}</div>
+        <div class="tc-stat-lbl">Holders</div>
+      </div>
+    </div>
+    <div class="tc-date">Certifié le ${fmtDate(t.timestamp)}</div>
+  `;
+  return d;
+}
+
+async function loadTokens() {
+  const grid    = document.getElementById('tokens-grid');
+  const wrapper = document.querySelector('.tokens-wrapper');
+
+  try {
+    const r = await fetch('./badge_list.json');
+    if (!r.ok) throw new Error('HTTP ' + r.status);
+    const list = await r.json();
+
+    grid.innerHTML = '';
+
+    if (!list || list.length === 0) {
+      grid.innerHTML = `
+        <div class="tokens-empty">
+          <div class="ei">🔎</div>
+          <p>Aucun token certifié pour l'instant.<br>
+          <span style="font-size:.88rem;color:#9CA3AF">Soyez le premier à soumettre votre token !</span></p>
+        </div>`;
+      return;
+    }
+
+    const VISIBLE = 3;
+    list.forEach((t, i) => {
+      const card = mkCard(t);
+      if (i >= VISIBLE) card.classList.add('blurred');
+      grid.appendChild(card);
+    });
+
+    if (list.length > VISIBLE) {
+      const ov = document.createElement('div');
+      ov.className = 'blur-overlay';
+      ov.innerHTML = `<a href="#tarifs" class="blur-cta">
+        🔑 Abonnez-vous pour voir les ${list.length} tokens certifiés
+      </a>`;
+      wrapper.appendChild(ov);
+    }
+
+  } catch {
+    grid.innerHTML = `
+      <div class="tokens-empty">
+        <div class="ei">🔎</div>
+        <p>Aucun token certifié pour l'instant.</p>
+      </div>`;
+  }
+}
+
+loadTokens();
+
+/* ── IntersectionObserver — apparition au scroll ──────────────────────── */
+const io = new IntersectionObserver(
+  entries => entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } }),
+  { threshold: 0.1, rootMargin: '0px 0px -36px 0px' }
+);
+document.querySelectorAll('.fade-up').forEach(el => io.observe(el));
+</script>
+</body>
+</html>
