@@ -1,0 +1,19 @@
+[
+  {
+    "token_name": "DONTSEL / SOL",
+    "mint_address": "5hhjDavkBZqisTzPmR8ke3JBj7Q5DBFcW4GpHfTKpump",
+    "timestamp": "2026-05-24T11:25:51.363795Z",
+    "audit_score": 8,
+    "liquidity": 1922.4,
+    "holder_count": 0,
+    "badge_obtenu": false,
+    "raisons_refus": [
+      "Trop peu de holders : 0",
+      "Liquidité insuffisante : 1,922 $"
+    ],
+    "verdict": "SAFE",
+    "prix_actuel": 2.444140825437436e-06,
+    "variation_24h_pct": 3.28,
+    "dex_id": "pump-fun"
+  }
+]
