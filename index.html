@@ -387,17 +387,8 @@
       font-weight: 500;
     }
 
-    /* ── Tokens certifiés ──────────────────────────────────────────────────── */
-    #tokens { background: var(--bg-light); }
-
-    .tokens-head {
-      display: flex;
-      align-items: flex-end;
-      justify-content: space-between;
-      gap: 1rem;
-      margin-bottom: 3rem;
-      flex-wrap: wrap;
-    }
+    /* ── Audits récents ────────────────────────────────────────────────────── */
+    #audits { background: var(--bg-light); }
 
     .live-badge {
       display: inline-flex;
@@ -418,85 +409,199 @@
       50%      { opacity:0.5; transform:scale(1.35); }
     }
 
-    .tokens-wrapper { position: relative; }
-
-    .tokens-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(290px, 1fr));
-      gap: 1.1rem;
-    }
-
-    .token-card {
+    /* Formulaire */
+    .audit-form-box {
       background: var(--blanc);
       border: 1.5px solid var(--border);
       border-radius: var(--radius);
-      padding: 1.5rem;
-      transition: box-shadow 0.25s, transform 0.25s;
+      padding: 2rem 2.2rem;
+      margin-bottom: 3rem;
     }
-    .token-card:hover { box-shadow: var(--shadow-md); transform: translateY(-2px); }
-    .token-card.blurred { filter: blur(5px); pointer-events: none; user-select: none; }
-
-    .tc-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.75rem; }
-    .tc-name { font-family:'Syne',sans-serif; font-weight:700; font-size:1.03rem; }
-    .tc-badge {
-      background: var(--vert-clair);
-      color: var(--vert);
-      font-size: 0.75rem;
-      font-weight: 600;
-      padding: 0.2rem 0.6rem;
-      border-radius: 100px;
+    .audit-form-title {
+      font-family: 'Syne', sans-serif;
+      font-weight: 700;
+      font-size: 1.15rem;
+      margin-bottom: 1.2rem;
+      color: var(--bleu);
     }
-    .tc-addr { font-family: monospace; font-size: 0.78rem; color: var(--gris); margin-bottom: 1rem; }
+    .audit-form-row {
+      display: flex;
+      gap: 0.75rem;
+      align-items: center;
+      flex-wrap: wrap;
+      margin-bottom: 1.4rem;
+    }
+    .audit-mint-input {
+      flex: 1;
+      min-width: 200px;
+      padding: 0.72rem 1rem;
+      border: 1.5px solid var(--border);
+      border-radius: 9px;
+      font-family: monospace;
+      font-size: 0.88rem;
+      color: var(--bleu);
+      background: var(--bg-light);
+      outline: none;
+      transition: border-color 0.2s;
+    }
+    .audit-mint-input:focus { border-color: var(--or); }
+    .audit-mint-input::placeholder { color: var(--gris); font-family: 'DM Sans', sans-serif; }
 
-    .tc-stats { display: grid; grid-template-columns: repeat(3,1fr); gap: 0.5rem; }
-    .tc-stat { text-align: center; }
-    .tc-stat-val { font-family:'Syne',sans-serif; font-weight:700; font-size:0.97rem; }
-    .tc-stat-lbl { font-size: 0.7rem; color: var(--gris); margin-top: 0.1rem; }
-
-    .tc-date {
-      margin-top: 1rem;
-      padding-top: 0.75rem;
-      border-top: 1px solid var(--border);
-      font-size: 0.76rem;
+    .audit-steps {
+      display: flex;
+      gap: 1.2rem;
+      flex-wrap: wrap;
+    }
+    .audit-step-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 0.55rem;
+      font-size: 0.86rem;
       color: var(--gris);
+      flex: 1;
+      min-width: 180px;
+      line-height: 1.55;
+    }
+    .audit-step-item strong { color: var(--bleu); }
+    .audit-step-num {
+      width: 22px; height: 22px;
+      background: var(--or);
+      color: var(--bleu);
+      border-radius: 50%;
+      font-weight: 700;
+      font-size: 0.72rem;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+      margin-top: 2px;
     }
 
-    /* Overlay flou */
-    .blur-overlay {
-      position: absolute;
-      bottom: 0; left: 0; right: 0;
-      height: 68%;
-      background: linear-gradient(to bottom, transparent 0%, var(--bg-light) 48%);
+    /* En-tête liste */
+    .audits-head {
       display: flex;
       align-items: flex-end;
-      justify-content: center;
-      padding-bottom: 2.5rem;
-      pointer-events: none;
+      justify-content: space-between;
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+      flex-wrap: wrap;
     }
-    .blur-cta {
-      background: var(--bleu);
-      color: var(--blanc);
-      padding: 0.9rem 2.4rem;
-      border-radius: 12px;
-      font-weight: 600;
-      font-size: 0.97rem;
-      pointer-events: all;
-      transition: background 0.22s, transform 0.22s;
-      text-align: center;
-      box-shadow: var(--shadow-md);
-    }
-    .blur-cta:hover { background: var(--bleu-mid); transform: translateY(-2px); }
 
-    .tokens-empty {
+    /* Cartes */
+    .audit-list {
+      display: flex;
+      flex-direction: column;
+      gap: 0.85rem;
+    }
+
+    .audit-card {
+      background: var(--blanc);
+      border: 1.5px solid var(--border);
+      border-left-width: 4px;
+      border-radius: var(--radius);
+      padding: 1.25rem 1.5rem;
+      transition: box-shadow 0.22s, transform 0.22s;
+    }
+    .audit-card:hover { box-shadow: var(--shadow-md); transform: translateX(3px); }
+    .audit-card.cat-fq {
+      border-left-color: var(--or);
+      background: linear-gradient(to right, rgba(201,168,76,0.05) 0%, var(--blanc) 55%);
+    }
+    .audit-card.cat-ps {
+      border-left-color: #1A6B4A;
+      background: linear-gradient(to right, rgba(26,107,74,0.045) 0%, var(--blanc) 55%);
+    }
+    .audit-card.cat-ko { border-left-color: #C0392B; }
+
+    .ac-row1 {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      flex-wrap: wrap;
+      margin-bottom: 0.6rem;
+    }
+    .ac-name { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 1.02rem; }
+    .ac-addr { font-family: monospace; font-size: 0.76rem; color: var(--gris); margin-top: 0.15rem; }
+
+    .ac-badge-fq {
+      display: inline-flex; align-items: center; gap: 0.35rem;
+      background: rgba(201,168,76,0.13); color: #8A6A1A;
+      border: 1px solid rgba(201,168,76,0.38);
+      font-size: 0.8rem; font-weight: 700;
+      padding: 0.25rem 0.8rem; border-radius: 100px; white-space: nowrap;
+    }
+    .ac-badge-ps {
+      display: inline-flex; align-items: center; gap: 0.35rem;
+      background: var(--vert-clair); color: var(--vert);
+      font-size: 0.8rem; font-weight: 600;
+      padding: 0.25rem 0.8rem; border-radius: 100px; white-space: nowrap;
+    }
+    .ac-badge-ko {
+      display: inline-flex; align-items: center; gap: 0.35rem;
+      background: #FDECEA; color: #C0392B;
+      font-size: 0.8rem; font-weight: 600;
+      padding: 0.25rem 0.8rem; border-radius: 100px; white-space: nowrap;
+    }
+    .ac-mention { font-size: 0.74rem; color: var(--gris); font-style: italic; margin-top: 0.2rem; }
+
+    .ac-row2 {
+      display: flex;
+      align-items: center;
+      gap: 1.25rem;
+      flex-wrap: wrap;
+      font-size: 0.84rem;
+      color: var(--gris);
+      margin-bottom: 0.4rem;
+    }
+    .ac-stat strong { color: var(--bleu); font-weight: 600; }
+    .ac-date { margin-left: auto; font-size: 0.76rem; color: var(--gris); white-space: nowrap; }
+
+    .ac-raisons { margin-top: 0.5rem; display: flex; flex-direction: column; gap: 0.2rem; }
+    .ac-raison { font-size: 0.8rem; color: #C0392B; }
+
+    .ac-notes {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.35rem;
+      margin-top: 0.6rem;
+      padding-top: 0.6rem;
+      border-top: 1px solid var(--border);
+    }
+    .ac-note-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.2rem;
+      font-size: 0.73rem;
+      font-weight: 600;
+      padding: 0.16rem 0.55rem;
+      border-radius: 100px;
+      white-space: nowrap;
+    }
+    .ac-note-pill em {
+      font-style: normal;
+      font-weight: 400;
+      opacity: 0.75;
+    }
+
+    .audits-counter {
+      display: flex;
+      gap: 1.5rem;
+      flex-wrap: wrap;
+      margin-bottom: 1.2rem;
+      font-size: 0.88rem;
+      color: var(--gris);
+    }
+    .counter-fq { font-weight: 700; color: #8A6A1A; }
+    .counter-ps { font-weight: 700; color: var(--vert); }
+
+    .audits-empty {
       text-align: center;
       padding: 4rem 2rem;
       background: var(--blanc);
       border-radius: var(--radius);
       border: 1.5px dashed var(--border);
       color: var(--gris);
-      grid-column: 1/-1;
     }
-    .tokens-empty .ei { font-size: 2.8rem; margin-bottom: 1rem; }
+    .audits-empty .ei { font-size: 2.8rem; margin-bottom: 1rem; }
 
     /* ── Tarifs ────────────────────────────────────────────────────────────── */
     #tarifs { background: var(--blanc); }
@@ -661,7 +766,10 @@
       .stat-item { padding: 1.2rem 1rem; border-bottom: 1px solid rgba(201,168,76,0.12); }
       .stat-item:last-child { border-bottom: none; }
       .criteria-grid { grid-template-columns: 1fr; }
-      .tokens-head { flex-direction:column; align-items:flex-start; }
+      .audits-head { flex-direction:column; align-items:flex-start; }
+      .audit-form-box { padding: 1.5rem 1.1rem; }
+      .ac-row2 { gap: 0.7rem; }
+      .ac-date { margin-left: 0; }
       .wallet-box { flex-direction:column; align-items:flex-start; }
       .badge-box { padding: 2rem 1.5rem; }
       .section { padding: 4rem 1.5rem; }
@@ -676,7 +784,7 @@
     <a href="#hero" class="nav-logo">🇫🇷 CryptoSécurité</a>
     <ul class="nav-links">
       <li><a href="#criteres">Audits</a></li>
-      <li><a href="#tokens">Tokens validés</a></li>
+      <li><a href="#audits">Audits récents</a></li>
       <li><a href="#tarifs">Tarifs</a></li>
       <li><a href="#payer">À propos</a></li>
     </ul>
@@ -696,7 +804,7 @@
     </p>
     <div class="hero-btns">
       <a href="#payer" class="btn btn-or">Auditer mon token — 0,02 SOL</a>
-      <a href="#tokens" class="btn btn-outline">Voir les tokens certifiés</a>
+      <a href="#audits" class="btn btn-outline">Voir les audits récents</a>
     </div>
   </div>
 </section>
@@ -802,27 +910,60 @@
   </div>
 </section>
 
-<!-- ══ TOKENS CERTIFIÉS ════════════════════════════════════════════════════ -->
-<section class="section" id="tokens">
+<!-- ══ AUDITS RÉCENTS ══════════════════════════════════════════════════════ -->
+<section class="section" id="audits">
   <div class="container">
-    <div class="tokens-head">
+
+    <!-- Formulaire -->
+    <div class="audit-form-box fade-up">
+      <div class="audit-form-title">Faire auditer mon token</div>
+      <div class="audit-form-row">
+        <input class="audit-mint-input" id="audit-mint-field" type="text"
+               spellcheck="false" autocomplete="off"
+               placeholder="Adresse mint de votre token (Solana)">
+        <button class="copy-btn" id="audit-copy-btn" onclick="copyPaymentAddr()">
+          📋 Copier l'adresse de paiement
+        </button>
+      </div>
+      <div class="audit-steps">
+        <div class="audit-step-item">
+          <div class="audit-step-num">1</div>
+          <span>Copiez l'adresse wallet de paiement ci-dessus.</span>
+        </div>
+        <div class="audit-step-item">
+          <div class="audit-step-num">2</div>
+          <span>Envoyez <strong>0,02 SOL</strong> avec votre adresse mint en <strong>mémo</strong>.</span>
+        </div>
+        <div class="audit-step-item">
+          <div class="audit-step-num">3</div>
+          <span>Résultat affiché ici automatiquement en <strong>moins de 2 minutes</strong>.</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- En-tête -->
+    <div class="audits-head">
       <div>
-        <div class="label">Validés par le bot</div>
-        <h2 class="section-title" style="margin-bottom:0">Tokens certifiés</h2>
+        <div class="label">Résultats en direct</div>
+        <h2 class="section-title" style="margin-bottom:0">Audits récents</h2>
       </div>
       <div class="live-badge">
         <div class="live-dot"></div>
         Mis à jour en temps réel
       </div>
     </div>
-    <div class="tokens-wrapper">
-      <div class="tokens-grid" id="tokens-grid">
-        <div class="tokens-empty">
-          <div class="ei">🔎</div>
-          <p>Chargement…</p>
-        </div>
+
+    <!-- Compteurs -->
+    <div class="audits-counter" id="audits-counter"></div>
+
+    <!-- Liste -->
+    <div class="audit-list" id="audits-list">
+      <div class="audits-empty">
+        <div class="ei">⏳</div>
+        <p>Chargement…</p>
       </div>
     </div>
+
   </div>
 </section>
 
@@ -958,10 +1099,13 @@ function fallback(text, cb) {
   document.body.removeChild(ta);
 }
 
-/* ── Chargement dynamique des tokens ──────────────────────────────────── */
+/* ── Chargement des audits ─────────────────────────────────────────────── */
 function fmtDate(iso) {
   try {
-    return new Date(iso).toLocaleDateString('fr-FR', { day:'2-digit', month:'short', year:'numeric' });
+    const d = new Date(iso);
+    return d.toLocaleDateString('fr-FR', { day:'2-digit', month:'short', year:'numeric' })
+           + ' · '
+           + d.toLocaleTimeString('fr-FR', { hour:'2-digit', minute:'2-digit' });
   } catch { return '—'; }
 }
 
@@ -972,83 +1116,124 @@ function fmtLiq(v) {
   return v.toLocaleString('fr-FR') + ' $';
 }
 
-function mkCard(t) {
-  const addr = t.mint_address || '';
-  const short = addr.length > 14 ? addr.slice(0,6) + '…' + addr.slice(-6) : addr;
-  const d = document.createElement('div');
-  d.className = 'token-card';
+function shortAddr(addr) {
+  if (!addr) return '—';
+  return addr.length > 14 ? addr.slice(0,8) + '…' + addr.slice(-4) : addr;
+}
+
+const NOTE_COLOR = { vert: '#1A6B4A', orange: '#C9A84C', rouge: '#C0392B' };
+const NOTE_BG    = { vert: '#E8F5EE', orange: '#FEF9EE', rouge: '#FDECEA' };
+const NOTE_LABEL = {
+  verdict: 'Verdict', audit_score: 'Score', bundler: 'Bundler',
+  dev: 'Dev', top10: 'Top 10', snipers: 'Snipers',
+  liquidity: 'Liquidité', holders: 'Holders',
+};
+
+function mkNotesPills(notes) {
+  if (!notes || typeof notes !== 'object') return '';
+  const pills = Object.entries(notes).map(([key, data]) => {
+    const color = NOTE_COLOR[data.couleur] || '#6B7280';
+    const bg    = NOTE_BG[data.couleur]    || '#F1F4F9';
+    const label = NOTE_LABEL[key] || key;
+    return `<span class="ac-note-pill" style="color:${color};background:${bg}">${data.note} <em>${label}</em></span>`;
+  }).join('');
+  return `<div class="ac-notes">${pills}</div>`;
+}
+
+function mkAuditCard(t) {
+  const cat = t.categorie || (t.badge_obtenu ? 'french_quality' : 'refuse');
+  const d   = document.createElement('div');
+  d.className = 'audit-card ' + (cat === 'french_quality' ? 'cat-fq' : cat === 'projet_sain' ? 'cat-ps' : 'cat-ko');
+
+  const prixStr = t.prix_actuel != null
+    ? `<span class="ac-stat">Prix : <strong>$${Number(t.prix_actuel).toPrecision(4)}</strong></span>`
+    : '';
+
+  const varColor = t.variation_24h_pct != null && t.variation_24h_pct >= 0 ? 'var(--vert)' : '#C0392B';
+  const varStr = t.variation_24h_pct != null
+    ? `<span class="ac-stat" style="color:${varColor}"><strong>${t.variation_24h_pct >= 0 ? '+' : ''}${Number(t.variation_24h_pct).toFixed(1)} %</strong> 24h</span>`
+    : '';
+
+  const raisons = Array.isArray(t.raisons_refus) && t.raisons_refus.length
+    ? `<div class="ac-raisons">${t.raisons_refus.map(r => `<div class="ac-raison">• ${r}</div>`).join('')}</div>`
+    : '';
+
+  let badgeHtml, mentionHtml = '';
+  if (cat === 'french_quality') {
+    badgeHtml = '<span class="ac-badge-fq">🇫🇷 French Quality</span>';
+  } else if (cat === 'projet_sain') {
+    badgeHtml   = '<span class="ac-badge-ps">🌱 Projet Sain</span>';
+    mentionHtml = '<div class="ac-mention">Token récent et propre — en construction</div>';
+  } else {
+    badgeHtml = '<span class="ac-badge-ko">❌ Badge refusé</span>';
+  }
+
   d.innerHTML = `
-    <div class="tc-head">
-      <div class="tc-name">${t.token_name || 'Inconnu'}</div>
-      <span class="tc-badge">🇫🇷 Certifié</span>
+    <div class="ac-row1">
+      <div>
+        <div class="ac-name">${t.token_name || 'Inconnu'}</div>
+        <div class="ac-addr">${shortAddr(t.mint_address)}</div>
+      </div>
+      <div style="text-align:right">${badgeHtml}${mentionHtml}</div>
     </div>
-    <div class="tc-addr">${short}</div>
-    <div class="tc-stats">
-      <div class="tc-stat">
-        <div class="tc-stat-val">${t.audit_score != null ? t.audit_score+'/8' : '—'}</div>
-        <div class="tc-stat-lbl">Score</div>
-      </div>
-      <div class="tc-stat">
-        <div class="tc-stat-val">${fmtLiq(t.liquidity)}</div>
-        <div class="tc-stat-lbl">Liquidité</div>
-      </div>
-      <div class="tc-stat">
-        <div class="tc-stat-val">${t.holder_count != null ? t.holder_count.toLocaleString('fr-FR') : '—'}</div>
-        <div class="tc-stat-lbl">Holders</div>
-      </div>
+    <div class="ac-row2">
+      <span class="ac-stat">Score : <strong>${t.audit_score != null ? t.audit_score+'/8' : '—'}</strong></span>
+      <span class="ac-stat">Liquidité : <strong>${fmtLiq(t.liquidity)}</strong></span>
+      <span class="ac-stat">Holders : <strong>${t.holder_count != null ? Number(t.holder_count).toLocaleString('fr-FR') : '—'}</strong></span>
+      ${prixStr}${varStr}
+      <span class="ac-stat">DEX : <strong>${t.dex_id || '—'}</strong></span>
+      <span class="ac-date">${fmtDate(t.timestamp)}</span>
     </div>
-    <div class="tc-date">Certifié le ${fmtDate(t.timestamp)}</div>
+    ${mkNotesPills(t.notes)}
+    ${raisons}
   `;
   return d;
 }
 
-async function loadTokens() {
-  const grid    = document.getElementById('tokens-grid');
-  const wrapper = document.querySelector('.tokens-wrapper');
-
-  try {
-    const r = await fetch('./badge_list.json');
-    if (!r.ok) throw new Error('HTTP ' + r.status);
-    const list = await r.json();
-
-    grid.innerHTML = '';
-
-    if (!list || list.length === 0) {
-      grid.innerHTML = `
-        <div class="tokens-empty">
-          <div class="ei">🔎</div>
-          <p>Aucun token certifié pour l'instant.<br>
-          <span style="font-size:.88rem;color:#9CA3AF">Soyez le premier à soumettre votre token !</span></p>
-        </div>`;
-      return;
-    }
-
-    const VISIBLE = 3;
-    list.forEach((t, i) => {
-      const card = mkCard(t);
-      if (i >= VISIBLE) card.classList.add('blurred');
-      grid.appendChild(card);
-    });
-
-    if (list.length > VISIBLE) {
-      const ov = document.createElement('div');
-      ov.className = 'blur-overlay';
-      ov.innerHTML = `<a href="#tarifs" class="blur-cta">
-        🔑 Abonnez-vous pour voir les ${list.length} tokens certifiés
-      </a>`;
-      wrapper.appendChild(ov);
-    }
-
-  } catch {
-    grid.innerHTML = `
-      <div class="tokens-empty">
-        <div class="ei">🔎</div>
-        <p>Aucun token certifié pour l'instant.</p>
-      </div>`;
+function copyPaymentAddr() {
+  const addr = '56YRiuepaTcqS7hQVeAnrEJbicD1KspQJ9sETnTJYvm5';
+  const btn  = document.getElementById('audit-copy-btn');
+  const reset = () => { btn.innerHTML = '📋 Copier l\'adresse de paiement'; btn.classList.remove('copied'); };
+  const apply = () => { btn.innerHTML = '✅ Copié !'; btn.classList.add('copied'); setTimeout(reset, 2600); };
+  if (navigator.clipboard && window.isSecureContext) {
+    navigator.clipboard.writeText(addr).then(apply).catch(() => fallback(addr, apply));
+  } else {
+    fallback(addr, apply);
   }
 }
 
-loadTokens();
+async function loadAudits() {
+  const list    = document.getElementById('audits-list');
+  const counter = document.getElementById('audits-counter');
+  const empty = `
+    <div class="audits-empty">
+      <div class="ei">🔎</div>
+      <p>Aucun token certifié pour l'instant.<br>
+      <span style="font-size:.93rem">Soyez le premier à faire auditer votre token !</span></p>
+    </div>`;
+  try {
+    const r = await fetch('./audit_history.json');
+    if (!r.ok) throw new Error('HTTP ' + r.status);
+    const data = await r.json();
+    list.innerHTML = '';
+    if (!data || data.length === 0) { list.innerHTML = empty; return; }
+
+    const fq     = data.filter(t => t.categorie === 'french_quality' || (!t.categorie && t.badge_obtenu));
+    const ps     = data.filter(t => t.categorie === 'projet_sain');
+    const sorted = [...fq, ...ps];
+
+    counter.innerHTML = `
+      <span><strong class="counter-fq">${fq.length}</strong>&nbsp;token${fq.length !== 1 ? 's' : ''} French Quality 🇫🇷</span>
+      <span><strong class="counter-ps">${ps.length}</strong>&nbsp;projet${ps.length !== 1 ? 's' : ''} sain${ps.length !== 1 ? 's' : ''} 🌱</span>
+    `;
+
+    sorted.forEach(t => list.appendChild(mkAuditCard(t)));
+  } catch {
+    list.innerHTML = empty;
+  }
+}
+
+loadAudits();
 
 /* ── IntersectionObserver — apparition au scroll ──────────────────────── */
 const io = new IntersectionObserver(
