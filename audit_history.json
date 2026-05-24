@@ -1,5 +1,186 @@
 [
   {
+    "token_name": "PEPE / SOL",
+    "mint_address": "pHRmWZLHaTCo1jRq6wFEWebUVnfGQTMees8pVrYpump",
+    "timestamp": "2026-05-24T13:14:26.329850Z",
+    "audit_score": 6,
+    "liquidity": 31118.47,
+    "holder_count": 0,
+    "badge_obtenu": false,
+    "raisons_refus": [
+      "Verdict non sécurisé : RISQUÉ",
+      "Top 10 holders : 70.0 %",
+      "Score d'audit insuffisant : 6/8",
+      "Holders : 0"
+    ],
+    "verdict": "RISQUÉ",
+    "prix_actuel": 0.00014308136706723163,
+    "variation_24h_pct": 279.2,
+    "dex_id": "pumpswap",
+    "notes": {
+      "verdict": {
+        "note": "❌ RISQUÉ",
+        "couleur": "rouge",
+        "pass": false
+      },
+      "audit_score": {
+        "note": "❌ 6/8",
+        "couleur": "rouge",
+        "pass": false
+      },
+      "bundler": {
+        "note": "✅ Excellent",
+        "couleur": "vert",
+        "pass": true
+      },
+      "dev": {
+        "note": "✅ Excellent",
+        "couleur": "vert",
+        "pass": true
+      },
+      "top10": {
+        "note": "❌ Refus",
+        "couleur": "rouge",
+        "pass": false
+      },
+      "snipers": {
+        "note": "✅ Excellent",
+        "couleur": "vert",
+        "pass": true
+      },
+      "liquidity": {
+        "note": "✅ Bon",
+        "couleur": "vert",
+        "pass": true
+      },
+      "holders": {
+        "note": "❌ Insuffisant",
+        "couleur": "rouge",
+        "pass": false
+      }
+    },
+    "categorie": "refuse"
+  },
+  {
+    "token_name": "HODL / SOL",
+    "mint_address": "45CscqVajZwFSrRpZmNjMf6T4bmcoBVmA8W8dDRBpump",
+    "timestamp": "2026-05-24T13:12:07.684400Z",
+    "audit_score": 7,
+    "liquidity": 13164.87,
+    "holder_count": 0,
+    "badge_obtenu": false,
+    "raisons_refus": [
+      "Verdict non sécurisé : RISQUÉ",
+      "Holders : 0"
+    ],
+    "verdict": "RISQUÉ",
+    "prix_actuel": 2.841328276847081e-05,
+    "variation_24h_pct": -18.78,
+    "dex_id": "pumpswap",
+    "notes": {
+      "verdict": {
+        "note": "❌ RISQUÉ",
+        "couleur": "rouge",
+        "pass": false
+      },
+      "audit_score": {
+        "note": "✅ 7/8",
+        "couleur": "vert",
+        "pass": true
+      },
+      "bundler": {
+        "note": "✅ Excellent",
+        "couleur": "vert",
+        "pass": true
+      },
+      "dev": {
+        "note": "✅ Excellent",
+        "couleur": "vert",
+        "pass": true
+      },
+      "top10": {
+        "note": "✅ Excellent",
+        "couleur": "vert",
+        "pass": true
+      },
+      "snipers": {
+        "note": "✅ Excellent",
+        "couleur": "vert",
+        "pass": true
+      },
+      "liquidity": {
+        "note": "✅ Bon",
+        "couleur": "vert",
+        "pass": true
+      },
+      "holders": {
+        "note": "❌ Insuffisant",
+        "couleur": "rouge",
+        "pass": false
+      }
+    },
+    "categorie": "refuse"
+  },
+  {
+    "token_name": "Stake / SOL",
+    "mint_address": "5s7tf6ih2CEZf7ZPNkJAtcknAq9DL5GsWHMMT3Jdpump",
+    "timestamp": "2026-05-24T13:10:02.091981Z",
+    "audit_score": 8,
+    "liquidity": 69372.25,
+    "holder_count": 0,
+    "badge_obtenu": false,
+    "raisons_refus": [
+      "Holders : 0"
+    ],
+    "verdict": "SAFE",
+    "prix_actuel": 0.0006593183676616411,
+    "variation_24h_pct": 1765.66,
+    "dex_id": "pumpswap",
+    "notes": {
+      "verdict": {
+        "note": "✅ SAFE",
+        "couleur": "vert",
+        "pass": true
+      },
+      "audit_score": {
+        "note": "✅ 8/8",
+        "couleur": "vert",
+        "pass": true
+      },
+      "bundler": {
+        "note": "✅ Excellent",
+        "couleur": "vert",
+        "pass": true
+      },
+      "dev": {
+        "note": "✅ Excellent",
+        "couleur": "vert",
+        "pass": true
+      },
+      "top10": {
+        "note": "✅ Excellent",
+        "couleur": "vert",
+        "pass": true
+      },
+      "snipers": {
+        "note": "✅ Excellent",
+        "couleur": "vert",
+        "pass": true
+      },
+      "liquidity": {
+        "note": "✅ Excellent",
+        "couleur": "vert",
+        "pass": true
+      },
+      "holders": {
+        "note": "❌ Insuffisant",
+        "couleur": "rouge",
+        "pass": false
+      }
+    },
+    "categorie": "projet_sain"
+  },
+  {
     "token_name": "DGOAT / SOL",
     "mint_address": "9BjW3inxbpFwHRYN5rPAzwGcd6dtYBGiuFgSdiHVpump",
     "timestamp": "2026-05-24T12:57:55.835714Z",
